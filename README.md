@@ -1,6 +1,6 @@
 # chevron.argv
 
-Argv is a class to parse an ARGV style array.Iit will parse an array for -flags and
+Argv is a class to parse an ARGV style array. It will parse an array for -flags and
 -key=value pairs. It supports the following syntax: "-f" "-flag" "-key=value"
 "-key value". Using one or more dashes has no effect.
 
