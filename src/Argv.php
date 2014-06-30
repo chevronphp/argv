@@ -32,7 +32,9 @@ class Argv {
 	}
 
 	/**
-	 *
+	 * method to parse both values and flags from the given argv string
+	 * @param array $values The keys that SHOULD have a value
+	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
 	function parse(array $values, array $flags){
 
@@ -43,7 +45,8 @@ class Argv {
 	}
 
 	/**
-	 *
+	 * method to parse values from the given argv string
+	 * @param array $values The keys that SHOULD have a value
 	 */
 	function parseValues(array $values){
 
@@ -67,7 +70,8 @@ class Argv {
 	}
 
 	/**
-	 *
+	 * method to parse flags from the given argv string
+	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
 	function parseFlags(array $flags){
 
