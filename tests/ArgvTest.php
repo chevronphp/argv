@@ -26,21 +26,21 @@ FUnit::test("Argv::__construct()", function(){
 		array("f1", "f2", "f3", "flag1", "flag2", "flag3")
 	);
 
-	FUnit::equal("value",  $argv->getValue("key1"), "value");
-	FUnit::equal("value2", $argv->getValue("key2"), "value");
-	FUnit::equal("value",  $argv->getValue("key3"), "value");
-	FUnit::equal("value4", $argv->getValue("key4"), "value");
-	FUnit::equal(null,     $argv->getValue("key5"), "null");
+	FUnit::equal("value",  $argv->value("key1"), "value");
+	FUnit::equal("value2", $argv->value("key2"), "value");
+	FUnit::equal("value",  $argv->value("key3"), "value");
+	FUnit::equal("value4", $argv->value("key4"), "value");
+	FUnit::equal(null,     $argv->value("key5"), "null");
 
-	FUnit::equal(true,     $argv->getFlag("f1"), "short flag");
-	FUnit::equal(true,     $argv->getFlag("f2"), "short flag");
-	FUnit::equal(false,    $argv->getFlag("f3"), "short flag");
+	FUnit::equal(true,     $argv->flag("f1"), "short flag");
+	FUnit::equal(true,     $argv->flag("f2"), "short flag");
+	FUnit::equal(false,    $argv->flag("f3"), "short flag");
 
-	FUnit::equal(true,     $argv->getFlag("flag1"), "long flag");
-	FUnit::equal(true,     $argv->getFlag("flag2"), "long flag");
-	FUnit::equal(false,    $argv->getFlag("flag3"), "long flag");
+	FUnit::equal(true,     $argv->flag("flag1"), "long flag");
+	FUnit::equal(true,     $argv->flag("flag2"), "long flag");
+	FUnit::equal(false,    $argv->flag("flag3"), "long flag");
 
-	$all = $argv->getAll();
+	$all = $argv->all();
 
 	$expected = [
 		"key1"  => "value",

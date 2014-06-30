@@ -8,6 +8,7 @@ namespace Chevron\Argv;
  */
 class Argv {
 
+	protected $args   = [];
 	protected $values = [];
 	protected $flags  = [];
 
@@ -25,10 +26,28 @@ class Argv {
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 * @return array
 	 */
-	function __construct($args, $values, $flags){
-		// $values = array_fill_keys($values, false);
-		$this->flags = array_fill_keys($flags, false);
+	function __construct($args, array $values = [], array $flags = []){
+		$this->args = $args;
+		$this->parse($values, $flags);
+	}
 
+	/**
+	 *
+	 */
+	function parse(array $values, array $flags){
+
+		if($values)	$this->parseValues($values);
+
+		if($flags) $this->parseFlags($flags);
+
+	}
+
+	/**
+	 *
+	 */
+	function parseValues(array $values){
+
+		$args = $this->args;
 		while( $arg = array_shift($args) ){
 			$arg = trim($arg, " -");
 
@@ -43,11 +62,27 @@ class Argv {
 				continue;
 			}
 
+		}
+
+	}
+
+	/**
+	 *
+	 */
+	function parseFlags(array $flags){
+
+		$this->flags = array_fill_keys($flags, false);
+
+		$args = $this->args;
+		while( $arg = array_shift($args) ){
+			$arg = trim($arg, " -");
+
 			if( in_array($arg, $flags) ){
 				$this->flags[$arg] = true;
 				continue;
 			}
 		}
+
 	}
 
 	/**
@@ -56,7 +91,7 @@ class Argv {
 	 * @param string $key The key to get
 	 * @return string
 	 */
-	function getValue($key){
+	function value($key){
 		if(array_key_exists($key, $this->values)){
 			return $this->values[$key];
 		}
@@ -69,7 +104,7 @@ class Argv {
 	 * @param string $key The key to get
 	 * @return bool
 	 */
-	function getFlag($key){
+	function flag($key){
 		if(array_key_exists($key, $this->flags)){
 			return $this->flags[$key];
 		}
@@ -81,7 +116,7 @@ class Argv {
 	 * array.
 	 * @return array
 	 */
-	function getAll(){
+	function all(){
 		$all = [];
 
 		foreach($this->values as $key => $value){
