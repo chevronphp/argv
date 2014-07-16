@@ -11,6 +11,7 @@ class Argv {
 	protected $args   = [];
 	protected $values = [];
 	protected $flags  = [];
+	protected $all    = [];
 
 	/**
 	 * method to parse an indexed array of args ($argv) into a set of values and
@@ -90,6 +91,27 @@ class Argv {
 	}
 
 	/**
+	 * check if a value is ARGV matches the given value
+	 * @param string $value The key of the value to check
+	 * @param mixed $match The value to match
+	 * @param bool $strict Toggle strict type checking
+	 * @return bool
+	 */
+	function is($value, $match, $strict = false){
+		if(!array_key_exists($value, $this->all())){
+			throw new \Exception("Key '{$value}' not found in ARGV");
+		}
+
+		if($strict){
+			return $this->all[$value] === $match;
+		}
+
+		return $this->all[$value] == $match;
+
+
+	}
+
+	/**
 	 * method to get the value of a provided value arg, having been parse from
 	 * the given args
 	 * @param string $key The key to get
@@ -121,17 +143,20 @@ class Argv {
 	 * @return array
 	 */
 	function all(){
-		$all = [];
+
+		if($this->all){ return $this->all; }
 
 		foreach($this->values as $key => $value){
-			$all[$key] = $value;
+			$this->all[$key] = $value;
 		}
 
 		foreach($this->flags as $key => $value){
-			$all[$key] = $value;
+			$this->all[$key] = $value;
 		}
 
-		return $all;
+		return $this->all;
 	}
 
 }
+
+

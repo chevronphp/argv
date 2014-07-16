@@ -19,3 +19,7 @@ if( $all["value-one"] == "this-value" ){
 if( !$all["flag-one"] ){
 	// noop
 }
+
+
+$argv = new Argv(["value-one", "value-two"], ["flag-one"]);
+$argv = $argv->parse($GLOBALS["argv"]);

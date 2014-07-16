@@ -32,13 +32,13 @@ FUnit::test("Argv::__construct()", function(){
 	FUnit::equal("value4", $argv->value("key4"), "value");
 	FUnit::equal(null,     $argv->value("key5"), "null");
 
-	FUnit::equal(true,     $argv->flag("f1"), "short flag");
-	FUnit::equal(true,     $argv->flag("f2"), "short flag");
-	FUnit::equal(false,    $argv->flag("f3"), "short flag");
-
 	FUnit::equal(true,     $argv->flag("flag1"), "long flag");
 	FUnit::equal(true,     $argv->flag("flag2"), "long flag");
 	FUnit::equal(false,    $argv->flag("flag3"), "long flag");
+
+	FUnit::strict_equal(true,  $argv->is("f1", true), "short flag");
+	FUnit::strict_equal(false, $argv->is("f2", "true", true), "short flag");
+	FUnit::strict_equal(true,  $argv->is("f3", false), "short flag");
 
 	$all = $argv->all();
 
