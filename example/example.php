@@ -1,6 +1,9 @@
 <?php
 
-$argv = new Argv($GLOBALS["argv"], ["value-one", "value-two"], ["flag-one"]);
+$argv = new Argv($GLOBALS["argv"]);
+$params = $argv->parse(["value-one", "value-two"], ["flag-one"]);
+
+
 
 if($argv->getValue("value-one") == "this-value"){
 	// noop

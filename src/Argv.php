@@ -14,7 +14,7 @@ class Argv {
 	protected $all    = [];
 
 	/**
-	 * method to parse an indexed array of args ($argv) into a set of values and
+	 * parse an indexed array of args ($argv) into a set of values and
 	 * flags. It takes an array, like a CLI command and parses it into meaningful
 	 * key=>value pairs. Args should follow these formats:
 	 *  -f
@@ -33,7 +33,7 @@ class Argv {
 	}
 
 	/**
-	 * method to parse both values and flags from the given argv string
+	 * parse both values and flags from the given argv string
 	 * @param array $values The keys that SHOULD have a value
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
@@ -43,10 +43,12 @@ class Argv {
 
 		if($flags) $this->parseFlags($flags);
 
+		return $this->all();
+
 	}
 
 	/**
-	 * method to parse values from the given argv string
+	 * parse values from the given argv string
 	 * @param array $values The keys that SHOULD have a value
 	 */
 	function parseValues(array $values){
@@ -71,7 +73,7 @@ class Argv {
 	}
 
 	/**
-	 * method to parse flags from the given argv string
+	 * parse flags from the given argv string
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
 	function parseFlags(array $flags){
@@ -112,7 +114,7 @@ class Argv {
 	}
 
 	/**
-	 * method to get the value of a provided value arg, having been parse from
+	 * get the value of a provided value arg, having been parse from
 	 * the given args
 	 * @param string $key The key to get
 	 * @return string
@@ -125,7 +127,7 @@ class Argv {
 	}
 
 	/**
-	 * method to get the value of a provided flag arg, having been parse from
+	 * get the value of a provided flag arg, having been parse from
 	 * the given args
 	 * @param string $key The key to get
 	 * @return bool
@@ -138,7 +140,7 @@ class Argv {
 	}
 
 	/**
-	 * method to get the entire argv array, having been parsed from the given
+	 * get the entire argv array, having been parsed from the given
 	 * array.
 	 * @return array
 	 */
@@ -155,6 +157,13 @@ class Argv {
 		}
 
 		return $this->all;
+	}
+
+	/**
+	 * reset the internal arrays to allow for reparsing
+	 */
+	function reset(){
+		$this->values = $this->flags = $this->all = [];
 	}
 
 }
