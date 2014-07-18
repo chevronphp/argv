@@ -27,9 +27,8 @@ class Argv {
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 * @return array
 	 */
-	function __construct($args, array $values = [], array $flags = []){
+	function __construct($args){
 		$this->args = $args;
-		$this->parse($values, $flags);
 	}
 
 	/**
@@ -51,7 +50,7 @@ class Argv {
 	 * parse values from the given argv string
 	 * @param array $values The keys that SHOULD have a value
 	 */
-	function parseValues(array $values){
+	protected function parseValues(array $values){
 
 		$args = $this->args;
 		while( $arg = array_shift($args) ){
@@ -76,7 +75,7 @@ class Argv {
 	 * parse flags from the given argv string
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
-	function parseFlags(array $flags){
+	protected function parseFlags(array $flags){
 
 		$this->flags = array_fill_keys($flags, false);
 
@@ -109,7 +108,6 @@ class Argv {
 		}
 
 		return $this->all[$value] == $match;
-
 
 	}
 

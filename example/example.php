@@ -24,5 +24,5 @@ if( !$all["flag-one"] ){
 }
 
 
-$argv = new Argv(["value-one", "value-two"], ["flag-one"]);
-$argv = $argv->parse($GLOBALS["argv"]);
+$argv = new Argv($GLOBALS["argv"]);
+$argv = $argv->parse(["value-one", "value-two"], ["flag-one"]);
