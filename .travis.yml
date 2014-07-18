@@ -10,5 +10,5 @@ install:
   - composer --self-update
   - composer install
 
-script: ./vendor/bin/fu -r tests/
+script: ./vendor/bin/phpunit
 
