@@ -11,7 +11,7 @@ $argv = $argv->parse(["value-one", "value-two"], ["flag-one"]);
 
 # installation
 
-Using [composer](http://getcomposer.org/) `"require" : { "henderjon/chevron-argv": "1.*" }`
+Using [composer](http://getcomposer.org/) `"require" : { "henderjon/chevron-argv": "~1.0" }`
 
 # license
 
@@ -23,6 +23,11 @@ See LICENSE.md for the [BSD-3-Clause](http://opensource.org/licenses/BSD-3-Claus
   - Reading on [Semantic Versioning](http://semver.org/)
   - Reading on [Composer Versioning](https://getcomposer.org/doc/01-basic-usage.md#package-versions)
 
+## cool kids badges
+
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/henderjon/chevron.argv/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/henderjon/chevron.argv/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/henderjon/chevron.argv/badges/build.png?b=master)](https://scrutinizer-ci.com/g/henderjon/chevron.argv/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/henderjon/chevron.argv/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/henderjon/chevron.argv/?branch=master)
 
 
 
