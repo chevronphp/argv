@@ -6,7 +6,8 @@ Argv is a class to parse an ARGV style array. It will parse an array for -flags 
 
 # usage
 
-$args = new Argv($_ARGV, array $keys, array $flags);
+$argv = new Argv($GLOBALS["argv"]);
+$argv = $argv->parse(["value-one", "value-two"], ["flag-one"]);
 
 # installation
 
