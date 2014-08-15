@@ -1,4 +1,4 @@
-(This is a BSD-3-Clause License)
+[![License](https://poser.pugx.org/henderjon/chevron-argv/license.svg)](https://packagist.org/packages/henderjon/chevron-argv)
 
 Copyright (c) 2012, Jon Henderson (@henderjon) All rights reserved.
 
