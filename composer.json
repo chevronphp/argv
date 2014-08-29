@@ -1,8 +1,8 @@
 {
-	"name"        : "henderjon/chevron-argv",
+	"name"        : "chevron/argv",
 	"type"        : "library",
-	"description" : "a simple function to parse an $argv array",
-	"homepage"    : "http://github.com/henderjon/chevron.argv",
+	"description" : "an OOP way to parse an $argv array",
+	"homepage"    : "http://github.com/chevronphp/argv",
 	"license"     : "BSD-3-Clause",
 	"authors"     : [
 		{
