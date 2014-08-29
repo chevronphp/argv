@@ -21,24 +21,24 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 			"value4",
 		]);
 
-		$_argv = $argv->parse(
+		$argv->parse(
 			["key1", "key2", "key3", "key4", "key5"],
 			["f1", "f2", "f3", "flag1", "flag2", "flag3"]
 		);
 
-		$this->assertEquals("value",  $argv->value("key1"), "value");
-		$this->assertEquals("value2", $argv->value("key2"), "value");
-		$this->assertEquals("value",  $argv->value("key3"), "value");
-		$this->assertEquals("value4", $argv->value("key4"), "value");
-		$this->assertEquals(null,     $argv->value("key5"), "null");
+		$this->assertEquals("value",  $argv->get("key1"));
+		$this->assertEquals("value2", $argv->get("key2"));
+		$this->assertEquals("value",  $argv->get("key3"));
+		$this->assertEquals("value4", $argv->get("key4"));
+		$this->assertEquals(null,     $argv->get("key5"));
 
-		$this->assertSame(true,     $argv->flag("flag1"), "long flag");
-		$this->assertSame(true,     $argv->flag("flag2"), "long flag");
-		$this->assertSame(false,    $argv->flag("flag3"), "long flag");
+		$this->assertSame(true,     $argv->get("flag1"));
+		$this->assertSame(true,     $argv->get("flag2"));
+		$this->assertSame(false,    $argv->get("flag3"));
 
-		$this->assertSame(true,  $argv->is("f1", true), "short flag");
-		$this->assertSame(false, $argv->is("f2", "true", true), "short flag");
-		$this->assertSame(true,  $argv->is("f3", false), "short flag");
+		$this->assertSame(true,  $argv->get("f1"));
+		$this->assertSame(true,  $argv->get("f2"));
+		$this->assertSame(false, $argv->get("f3"));
 
 		$all = $argv->all();
 
@@ -53,9 +53,10 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 			"flag1" => true,
 			"flag2" => true,
 			"flag3" => false,
+			"key5"  => null,
 		];
 
-		$this->assertEquals($expected, $_argv, "get all");
+		$this->assertEquals($expected, $all, "get all");
 
 	}
 

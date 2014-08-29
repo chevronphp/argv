@@ -9,8 +9,11 @@ namespace Chevron\Argv;
 class Argv {
 
 	protected $args   = [];
+
 	protected $values = [];
+
 	protected $flags  = [];
+
 	protected $all    = [];
 
 	/**
@@ -38,12 +41,21 @@ class Argv {
 	 */
 	function parse(array $values, array $flags){
 
-		if($values)	$this->parseValues($values);
+		if($values){ $this->parseValues($values); }
 
-		if($flags) $this->parseFlags($flags);
+		if($flags){ $this->parseFlags($flags); }
 
 		return $this->all();
 
+	}
+
+	function get($name){
+		$all = $this->all();
+
+		if(array_key_exists($name, $all)){
+			return $all[$name];
+		}
+		return null;
 	}
 
 	/**
@@ -51,6 +63,10 @@ class Argv {
 	 * @param array $values The keys that SHOULD have a value
 	 */
 	protected function parseValues(array $values){
+
+		$this->values = [];
+
+		$this->values = array_fill_keys($values, null);
 
 		$args = $this->args;
 		while( $arg = array_shift($args) ){
@@ -77,6 +93,8 @@ class Argv {
 	 */
 	protected function parseFlags(array $flags){
 
+		$this->flags = [];
+
 		$this->flags = array_fill_keys($flags, false);
 
 		$args = $this->args;
@@ -89,52 +107,6 @@ class Argv {
 			}
 		}
 
-	}
-
-	/**
-	 * check if a value is ARGV matches the given value
-	 * @param string $value The key of the value to check
-	 * @param mixed $match The value to match
-	 * @param bool $strict Toggle strict type checking
-	 * @return bool
-	 */
-	function is($value, $match, $strict = false){
-		if(!array_key_exists($value, $this->all())){
-			throw new \Exception("Key '{$value}' not found in ARGV");
-		}
-
-		if($strict){
-			return $this->all[$value] === $match;
-		}
-
-		return $this->all[$value] == $match;
-
-	}
-
-	/**
-	 * get the value of a provided value arg, having been parse from
-	 * the given args
-	 * @param string $key The key to get
-	 * @return string
-	 */
-	function value($key){
-		if(array_key_exists($key, $this->values)){
-			return $this->values[$key];
-		}
-		return null;
-	}
-
-	/**
-	 * get the value of a provided flag arg, having been parse from
-	 * the given args
-	 * @param string $key The key to get
-	 * @return bool
-	 */
-	function flag($key){
-		if(array_key_exists($key, $this->flags)){
-			return $this->flags[$key];
-		}
-		return null;
 	}
 
 	/**
@@ -155,13 +127,6 @@ class Argv {
 		}
 
 		return $this->all;
-	}
-
-	/**
-	 * reset the internal arrays to allow for reparsing
-	 */
-	function reset(){
-		$this->values = $this->flags = $this->all = [];
 	}
 
 }
