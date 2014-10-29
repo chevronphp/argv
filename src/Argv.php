@@ -1,73 +1,72 @@
 <?php
 
 namespace Chevron\Argv;
-/**
- * an OOP implimentation of henderjon/simple_scan_args
- *
- * @package Chevron\Argv
+/*
+ * Someday, I might add strong typing or variations on arg parsing. For now Argv
+ * is pretty straightforward.
  */
 class Argv {
 
+	/**
+	 * the given argv
+	 */
 	protected $args   = [];
 
+	/**
+	 * an array of values
+	 */
 	protected $values = [];
 
+	/**
+	 * an array of flags
+	 */
 	protected $flags  = [];
 
-	protected $all    = [];
-
 	/**
-	 * parse an indexed array of args ($argv) into a set of values and
-	 * flags. It takes an array, like a CLI command and parses it into meaningful
-	 * key=>value pairs. Args should follow these formats:
-	 *  -f
-	 *  -flag
-	 *  -key=value
-	 *  -key value
-	 *
-	 * @param array $args The array to parse
-	 * @param array $values The keys that SHOULD have a value
-	 * @param array $flags The keys that should NOT have a value ... booleans
-	 * @return array
+	 * create a new instance around a given $argv
+	 * @param array $array the argv to parse
+	 * @return Chevron\Argv\Argvx
 	 */
-	function __construct($args){
-		$this->args = $args;
+	function __construct(array $array){
+		$this->args = $array;
 	}
 
 	/**
-	 * parse both values and flags from the given argv string
-	 * @param array $values The keys that SHOULD have a value
-	 * @param array $flags The keys that should NOT have a value ... booleans
+	 * set an expected flag value to false and return it via reference for parsing
+	 * @param string $name the name of the flag
+	 * @param string $message an unused value for missing flags
+	 * @return reference
 	 */
-	function parse(array $values, array $flags){
-
-		if($values){ $this->parseValues($values); }
-
-		if($flags){ $this->parseFlags($flags); }
-
-		return $this->all();
-
+	function &flag($name, $message){
+		$this->flags[$name] = false;
+		return $this->flags[$name];
 	}
 
-	function get($name){
-		$all = $this->all();
+	/**
+	 * set an expected value to the default and return it via reference for parsing
+	 * @param string $name the name of the flag
+	 * @param string $message an unused value for missing flags
+	 * @return reference
+	 */
+	function &value($name, $default, $message){
+		$this->values[$name] = $default;
+		return $this->values[$name];
+	}
 
-		if(array_key_exists($name, $all)){
-			return $all[$name];
-		}
-		return null;
+	/**
+	 * do the parsing
+	 * @return void
+	 */
+	function parse(){
+		$this->parseFlags();
+		$this->parseValues();
 	}
 
 	/**
 	 * parse values from the given argv string
 	 * @param array $values The keys that SHOULD have a value
 	 */
-	protected function parseValues(array $values){
-
-		$this->values = [];
-
-		$this->values = array_fill_keys($values, null);
-
+	protected function parseValues(){
 		$args = $this->args;
 		while( $arg = array_shift($args) ){
 			$arg = trim($arg, " -");
@@ -78,7 +77,7 @@ class Argv {
 				continue;
 			}
 
-			if( in_array($arg, $values) ){
+			if( array_key_exists($arg, $this->values) ){
 				$this->values[$arg] = array_shift($args);
 				continue;
 			}
@@ -91,17 +90,12 @@ class Argv {
 	 * parse flags from the given argv string
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
-	protected function parseFlags(array $flags){
-
-		$this->flags = [];
-
-		$this->flags = array_fill_keys($flags, false);
-
+	protected function parseFlags(){
 		$args = $this->args;
 		while( $arg = array_shift($args) ){
 			$arg = trim($arg, " -");
 
-			if( in_array($arg, $flags) ){
+			if( array_key_exists($arg, $this->flags) ){
 				$this->flags[$arg] = true;
 				continue;
 			}
@@ -109,26 +103,4 @@ class Argv {
 
 	}
 
-	/**
-	 * get the entire argv array, having been parsed from the given
-	 * array.
-	 * @return array
-	 */
-	function all(){
-
-		if($this->all){ return $this->all; }
-
-		foreach($this->values as $key => $value){
-			$this->all[$key] = $value;
-		}
-
-		foreach($this->flags as $key => $value){
-			$this->all[$key] = $value;
-		}
-
-		return $this->all;
-	}
-
 }
-
-
