@@ -5,12 +5,12 @@ namespace Chevron\Argv;
  * Someday, I might add strong typing or variations on arg parsing. For now Argv
  * is pretty straightforward.
  */
-class Argv {
+class Argv implements \Countable {
 
 	/**
 	 * the given argv
 	 */
-	protected $args   = [];
+	protected $argv   = [];
 
 	/**
 	 * an array of values
@@ -28,7 +28,7 @@ class Argv {
 	 * @return Chevron\Argv\Argvx
 	 */
 	function __construct(array $array){
-		$this->args = $array;
+		$this->argv = $array;
 	}
 
 	/**
@@ -63,11 +63,25 @@ class Argv {
 	}
 
 	/**
+	 * get the original argv
+	 */
+	function getArgv(){
+		return $this->argv;
+	}
+
+	/**
+	 * get the argc
+	 */
+	function count(){
+		return count($this->argv);
+	}
+
+	/**
 	 * parse values from the given argv string
 	 * @param array $values The keys that SHOULD have a value
 	 */
 	protected function parseValues(){
-		$args = $this->args;
+		$args = $this->argv;
 		while( $arg = array_shift($args) ){
 			$arg = trim($arg, " -");
 
@@ -91,7 +105,7 @@ class Argv {
 	 * @param array $flags The keys that should NOT have a value ... booleans
 	 */
 	protected function parseFlags(){
-		$args = $this->args;
+		$args = $this->argv;
 		while( $arg = array_shift($args) ){
 			$arg = trim($arg, " -");
 
@@ -100,8 +114,6 @@ class Argv {
 				continue;
 			}
 		}
-
 	}
-
 }
 

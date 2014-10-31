@@ -33,4 +33,32 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 
 	}
 
+	function test_args(){
+
+		$args = ["path/to/file", "-flag", "--value", "this-value", "-other-value=other-value"];
+
+		$a = new Argv($args);
+
+		$flag       =& $a->flag("flag", "This is a flag.");
+		$value      =& $a->value("value", "default-value", "This is a value.");
+		$otherValue =& $a->value("other-value", "default-value", "This is a value.");
+
+		$nonFlag  =& $a->flag("nonflag", "This is a nonflag.");
+		$nonValue =& $a->value("nonvalue", "default-nonvalue", "This is a value.");
+
+		$this->assertEquals($value, "default-value");
+		$this->assertEquals($otherValue, "default-value");
+		$this->assertFalse($flag);
+		$this->assertEquals($nonValue, "default-nonvalue");
+		$this->assertFalse($nonFlag);
+
+		$a->parse();
+
+		$result = $a->getArgv();
+
+		$this->assertEquals($args, $result);
+		$this->assertEquals(count($a), 5);
+
+	}
+
 }
