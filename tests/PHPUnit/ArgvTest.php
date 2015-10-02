@@ -61,4 +61,17 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 
 	}
 
+	function test_simple_scan(){
+
+		$args = ["path/to/file", "-flag", "--value", "this-value", "-other-value=other-value"];
+
+		$args = Argv::simple_scan_args($args, ["value"], ["flag"]);
+
+		$this->assertEquals($args, [
+			"flag" => true,
+			"value" => "this-value",
+		]);
+
+	}
+
 }
