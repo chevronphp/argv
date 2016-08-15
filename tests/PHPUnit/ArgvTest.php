@@ -6,71 +6,83 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 
 	function test_argv(){
 
-		$args = ["path/to/file", "-flag", "--value", "this-value", "-other-value=other-value"];
+		$args = [
+			"path/to/file.php",
+			"-flag1",
+			"--int-value",
+			"1234",
+			"-string-value=bbq",
+			"--flag2"
+		];
 
 		$a = new Argv($args);
 
-		$flag       =& $a->flag("flag", "This is a flag.");
-		$value      =& $a->value("value", "default-value", "This is a value.");
-		$otherValue =& $a->value("other-value", "default-value", "This is a value.");
-
-		$nonFlag  =& $a->flag("nonflag", "This is a nonflag.");
-		$nonValue =& $a->value("nonvalue", "default-nonvalue", "This is a value.");
-
-		$this->assertEquals($value, "default-value");
-		$this->assertEquals($otherValue, "default-value");
-		$this->assertFalse($flag);
-		$this->assertEquals($nonValue, "default-nonvalue");
-		$this->assertFalse($nonFlag);
-
-		$a->parse();
-
-		$this->assertEquals($value, "this-value");
-		$this->assertEquals($otherValue, "other-value");
-		$this->assertTrue($flag);
-		$this->assertEquals($nonValue, "default-nonvalue");
-		$this->assertFalse($nonFlag);
+		$this->assertEquals($a->get("int-value"), 1234);
+		$this->assertEquals($a->get("not-a-thing"), null);
+		$this->assertEquals($a->requireInt("int-value"), 1234);
+		$this->assertEquals($a->requireStr("string-value"), "bbq");
+		$this->assertTrue($a->requireBool("flag2"));
+		$this->assertFalse($a->requireBool("flag8"));
 
 	}
 
-	function test_args(){
+	/**
+	 * @expectedException \OutOfBoundsException
+	 */
+	function test_bad(){
 
-		$args = ["path/to/file", "-flag", "--value", "this-value", "-other-value=other-value"];
+		$args = [
+			"path/to/file.php",
+			"-flag1",
+			"--int-value",
+			"1234",
+			"-string-value=bbq",
+			"--flag2"
+		];
 
 		$a = new Argv($args);
 
-		$flag       =& $a->flag("flag", "This is a flag.");
-		$value      =& $a->value("value", "default-value", "This is a value.");
-		$otherValue =& $a->value("other-value", "default-value", "This is a value.");
-
-		$nonFlag  =& $a->flag("nonflag", "This is a nonflag.");
-		$nonValue =& $a->value("nonvalue", "default-nonvalue", "This is a value.");
-
-		$this->assertEquals($value, "default-value");
-		$this->assertEquals($otherValue, "default-value");
-		$this->assertFalse($flag);
-		$this->assertEquals($nonValue, "default-nonvalue");
-		$this->assertFalse($nonFlag);
-
-		$a->parse();
-
-		$result = $a->getArgv();
-
-		$this->assertEquals($args, $result);
-		$this->assertEquals(count($a), 5);
+		$this->assertEquals($a->requireInt("inter-value"), 1234);
 
 	}
 
-	function test_simple_scan(){
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	function test_bad2(){
 
-		$args = ["path/to/file", "-flag", "--value", "this-value", "-other-value=other-value"];
+		$args = [
+			"path/to/file.php",
+			"-flag1",
+			"--int-value",
+			"1234",
+			"-string-value=bbq",
+			"--flag2"
+		];
 
-		$args = Argv::simple_scan_args($args, ["value"], ["flag"]);
+		$a = new Argv($args);
 
-		$this->assertEquals($args, [
-			"flag" => true,
-			"value" => "this-value",
-		]);
+		$this->assertEquals($a->requireInt("string-value"), "bbq");
+
+	}
+
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	function test_not_bool(){
+
+		$args = [
+			"path/to/file.php",
+			"-flag1",
+			"--int-value",
+			"1234",
+			"-string-value=bbq",
+			"--flag2"
+		];
+
+		$a = new Argv($args);
+
+		$this->assertTrue($a->requireBool("string-value"));
 
 	}
 

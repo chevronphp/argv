@@ -1,148 +1,108 @@
 <?php
 
 namespace Chevron\Argv;
-/*
- * Someday, I might add strong typing or variations on arg parsing. For now Argv
- * is pretty straightforward.
- */
-class Argv implements \Countable {
 
-	/**
-	 * the given argv
-	 */
-	protected $argv   = [];
+class Argv {
 
-	/**
-	 * an array of values
-	 */
-	protected $values = [];
+	protected $map;
 
-	/**
-	 * an array of flags
-	 */
-	protected $flags  = [];
+	const TYPE_STR  = 1;
+	const TYPE_INT  = 2;
+	const TYPE_BOOL = 3;
 
-	/**
-	 * create a new instance around a given $argv
-	 * @param array $array the argv to parse
-	 * @return Chevron\Argv\Argvx
-	 */
-	function __construct(array $array){
-		$this->argv = $array;
+	public function __construct(array $argv){
+		$this->map = $this->parse($argv);
 	}
 
-	/**
-	 * set an expected flag value to false and return it via reference for parsing
-	 * @param string $name the name of the flag
-	 * @param string $message an unused value for missing flags
-	 * @return reference
-	 */
-	function &flag($name, $message){
-		$this->flags[$name] = false;
-		return $this->flags[$name];
-	}
-
-	/**
-	 * set an expected value to the default and return it via reference for parsing
-	 * @param string $name the name of the flag
-	 * @param string $message an unused value for missing flags
-	 * @return reference
-	 */
-	function &value($name, $default, $message){
-		$this->values[$name] = $default;
-		return $this->values[$name];
-	}
-
-	/**
-	 * do the parsing
-	 * @return void
-	 */
-	function parse(){
-		$this->parseFlags();
-		$this->parseValues();
-	}
-
-	/**
-	 * get the original argv
-	 */
-	function getArgv(){
-		return $this->argv;
-	}
-
-	/**
-	 * get the argc
-	 */
-	function count(){
-		return count($this->argv);
-	}
-
-	/**
-	 * parse values from the given argv string
-	 * @param array $values The keys that SHOULD have a value
-	 */
-	protected function parseValues(){
-		$args = $this->argv;
-		while( $arg = array_shift($args) ){
-			$arg = trim($arg, " -");
-
-			if( false !== ($pos = strpos($arg, "=")) ){
-				$key                = substr($arg, 0, $pos);
-				$this->values[$key] = substr($arg, ($pos + 1));
-				continue;
-			}
-
-			if( array_key_exists($arg, $this->values) ){
-				$this->values[$arg] = array_shift($args);
-				continue;
-			}
-
-		}
-
-	}
-
-	/**
-	 * parse flags from the given argv string
-	 * @param array $flags The keys that should NOT have a value ... booleans
-	 */
-	protected function parseFlags(){
-		$args = $this->argv;
-		while( $arg = array_shift($args) ){
-			$arg = trim($arg, " -");
-
-			if( array_key_exists($arg, $this->flags) ){
-				$this->flags[$arg] = true;
-				continue;
-			}
+	public function get($key){
+		try{
+			return $this->required($key);
+		}catch(\Exception $e){
+			return null;
 		}
 	}
 
-	static public function simple_scan_args(array $args, array $values, array $flags = array()){
+	public function requireInt($key){
+		$val = $this->required($key);
+		if(!ctype_digit($val)){
+			throw new \InvalidArgumentException("non-numeric value: {$val}");
+		}
+		return intval($val);
+	}
 
-		// $values = array_fill_keys($values, false);
-		$final = array_fill_keys($flags, false);
-		$_argv = array_reverse($args);
+	public function requireBool($key){
+		$val = $this->get($key);
+		if(!is_bool($val) && !is_null($val)){
+			throw new \InvalidArgumentException("non-bool value: {$val}");
+		}
+		return $val === true;
+	}
 
-		while( $arg = array_pop($_argv) ){
-			$arg = trim($arg, " -");
+	public function requireStr($key){
+		$val = $this->required($key);
+		if(!is_string($val) && !is_int($val)){
+			throw new \InvalidArgumentException("non-string value: {$val}");
+		}
+		return (string)$val;
+	}
 
-			if(false !== ($pos = strpos($arg, "="))){
-				$_argv[] = substr($arg, ($pos + 1));
-				$arg     = substr($arg, 0, $pos);
+	public function getAll(){
+		return $this->map;
+	}
+
+	protected function parse(array $map){
+		$final = [];
+
+		for($i = 1; $i < count($map); $i += 1){
+			$val = $this->softTrim($map[$i]);
+
+			if(strpos($val, "=") !== false){
+				$val = $this->hardTrim($val);
+				$pos = strpos($val, "=");
+
+				$key         = substr($val, 0, $pos);
+				$final[$key] = substr($val, ($pos + 1));
+				continue;
 			}
 
-			switch(true){
-				case in_array($arg, $values) :
-					$final[$arg] = array_pop($_argv);
-				break;
-				case in_array($arg, $flags) :
-					$final[$arg] = true;
-				break;
+			if(strpos($val, "-") === 0){
+				$val  = $this->hardTrim($val);
+				if(empty($map[$i + 1])){
+					$final[$val] = true;
+					continue;
+				}
+
+				$nVal = $this->softTrim($map[$i + 1]);
+				if(strpos($nVal, "-") === 0){
+					$final[$val] = true;
+					continue;
+				}
+
+				$nVal = $this->hardTrim($nVal);
+				$final[$val] = $nVal;
+				$i += 1;
 			}
 		}
 
 		return $final;
+	}
 
+	protected function softTrim($val){
+		return trim($val);
+	}
+
+	protected function hardTrim($val){
+		return trim($val, " \t\n\r\0\x0B-");
+	}
+
+	protected function required($key){
+		if(!isset($this->map[$key])){
+			throw new \OutOfBoundsException("unknown key: {$key}");
+		}
+		return $this->map[$key];
 	}
 
 }
+
+
 
