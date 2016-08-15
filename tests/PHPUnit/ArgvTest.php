@@ -86,4 +86,29 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 
 	}
 
+	function test_defaults(){
+
+		$args = [
+			"path/to/file.php",
+			"-flag1",
+			"--int-value",
+			"1234",
+			"-string-value=bbq",
+			"--flag2"
+		];
+
+		$a = new Argv($args, [
+			"int-value"       => 2345,
+			"other-int-value" => 9876,
+			"flag2"           => false,
+			"flag3"           => true,
+		]);
+
+		$this->assertEquals($a->requireInt("int-value"), 1234);
+		$this->assertEquals($a->requireStr("string-value"), "bbq");
+		$this->assertTrue($a->requireBool("flag2"));
+		$this->assertTrue($a->requireBool("flag3"));
+
+	}
+
 }

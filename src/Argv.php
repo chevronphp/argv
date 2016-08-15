@@ -10,8 +10,9 @@ class Argv {
 	const TYPE_INT  = 2;
 	const TYPE_BOOL = 3;
 
-	public function __construct(array $argv){
+	public function __construct(array $argv, array $defaults = []){
 		$this->map = $this->parse($argv);
+		$this->map = array_merge($defaults, $this->map);
 	}
 
 	public function get($key){
