@@ -15,12 +15,13 @@ class ArgvTest extends PHPUnit_Framework_TestCase {
 			"--flag2"
 		];
 
-		$a = new Argv($args);
+		$a = new Argv($args, []);
 
 		$this->assertEquals($a->get("int-value"), 1234);
 		$this->assertEquals($a->get("not-a-thing"), null);
 		$this->assertEquals($a->requireInt("int-value"), 1234);
 		$this->assertEquals($a->requireStr("string-value"), "bbq");
+		$this->assertTrue($a->requireBool("flag1"));
 		$this->assertTrue($a->requireBool("flag2"));
 		$this->assertFalse($a->requireBool("flag8"));
 

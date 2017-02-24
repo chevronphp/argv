@@ -73,19 +73,19 @@ class Argv {
 
 			if(strpos($val, "-") === 0){
 				$val  = $this->hardTrim($val);
-				if(empty($map[$i + 1])){
+				if(empty($map[$i + 1])){ // bool the last arg
 					$final[$val] = true;
 					continue;
 				}
 
 				$nVal = $this->softTrim($map[$i + 1]);
-				if(strpos($nVal, "-") === 0){
+				if(strpos($nVal, "-") === 0){ // bool not the last arg
 					$final[$val] = true;
 					continue;
 				}
 
 				$nVal = $this->hardTrim($nVal);
-				$final[$val] = $nVal;
+				$final[$val] = $nVal; // arg w/ value w/o `=`
 				$i += 1;
 			}
 		}
