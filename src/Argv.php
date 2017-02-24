@@ -26,7 +26,7 @@ class Argv {
 	public function requireInt($key){
 		$val = $this->required($key);
 		if(!ctype_digit($val)){
-			throw new \InvalidArgumentException("non-numeric value: {$val}");
+			throw new \InvalidArgumentException("non-numeric value for key: {$key} = {$val}");
 		}
 		return intval($val);
 	}
@@ -34,7 +34,7 @@ class Argv {
 	public function requireBool($key){
 		$val = $this->get($key);
 		if(!is_bool($val) && !is_null($val)){
-			throw new \InvalidArgumentException("non-bool value: {$val}");
+			throw new \InvalidArgumentException("non-bool value for key: {$key}");
 		}
 		return $val === true;
 	}
@@ -42,7 +42,7 @@ class Argv {
 	public function requireStr($key){
 		$val = $this->required($key);
 		if(!is_string($val) && !is_int($val)){
-			throw new \InvalidArgumentException("non-string value: {$val}");
+			throw new \InvalidArgumentException("non-string value for key: {$key} = {$val}");
 		}
 		return (string)$val;
 	}
