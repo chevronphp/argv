@@ -10,8 +10,13 @@ class Argv {
 	const TYPE_INT  = 2;
 	const TYPE_BOOL = 3;
 
-	public function __construct(array $argv, array $defaults = []){
-		$this->map = $this->parse($argv);
+	/**
+	 * bool representation of an int. If you're dropping the global $argv in, we need to start parsing
+	 * at array index 1 for any other array (e.g. from a framework that already strips the 0 => script_name)
+	 * parsing should start at 0;
+	 */
+	public function __construct(array $argv, array $defaults = [], $global = false){
+		$this->map = $this->parse($argv, intval($global));
 		$this->map = array_merge($defaults, $this->map);
 	}
 
@@ -26,7 +31,7 @@ class Argv {
 	public function requireInt($key){
 		$val = $this->required($key);
 		if(!ctype_digit($val)){
-			throw new \InvalidArgumentException("non-numeric value for key: {$key} = {$val}");
+			throw new \InvalidArgumentException("non-numeric value for arg: {$key}={$val}");
 		}
 		return intval($val);
 	}
@@ -34,7 +39,7 @@ class Argv {
 	public function requireBool($key){
 		$val = $this->get($key);
 		if(!is_bool($val) && !is_null($val)){
-			throw new \InvalidArgumentException("non-bool value for key: {$key}");
+			throw new \InvalidArgumentException("non-bool value for arg: {$key}");
 		}
 		return $val === true;
 	}
@@ -42,7 +47,7 @@ class Argv {
 	public function requireStr($key){
 		$val = $this->required($key);
 		if(!is_string($val) && !is_int($val)){
-			throw new \InvalidArgumentException("non-string value for key: {$key} = {$val}");
+			throw new \InvalidArgumentException("non-string value for arg: {$key}={$val}");
 		}
 		return (string)$val;
 	}
@@ -51,10 +56,10 @@ class Argv {
 		return $this->map;
 	}
 
-	protected function parse(array $map){
+	protected function parse(array $map, $startIndex = 0){
 		$final = [];
 
-		for($i = 1; $i < count($map); $i += 1){
+		for($i = $startIndex; $i < count($map); $i += 1){
 			$val = $this->softTrim($map[$i]);
 
 			if(strpos($val, "=") !== false){
@@ -98,7 +103,7 @@ class Argv {
 
 	protected function required($key){
 		if(!isset($this->map[$key])){
-			throw new \OutOfBoundsException("unknown key: {$key}");
+			throw new \OutOfBoundsException("required arg: {$key}");
 		}
 		return $this->map[$key];
 	}
